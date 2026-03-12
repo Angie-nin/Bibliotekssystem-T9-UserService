@@ -1,0 +1,74 @@
+### Create user with API key
+POST https://localhost:7055/api/Users
+Content-Type: application/json
+X-API-KEY: DEV-CHANGE-ME-123
+
+{
+  "fullName": "A",
+  "email": "test@example.com",
+  "password": "Password123!",
+  "role": "User"
+}
+
+### Create user
+POST https://localhost:7055/api/Users
+Content-Type: application/json
+X-API-KEY: DEV-CHANGE-ME-123
+
+{
+  "fullName": "Test User",
+  "email": "user@test.com",
+  "password": "Password123!",
+  "role": "User"
+}
+
+### Invalid email
+POST https://localhost:7055/api/Users
+Content-Type: application/json
+X-API-KEY: DEV-CHANGE-ME-123
+
+{
+  "fullName": "Angelinne Test",
+  "email": "inte-en-epost",
+  "password": "Password123!",
+  "role": "User"
+}
+### Short password
+POST https://localhost:7055/api/Users
+Content-Type: application/json
+X-API-KEY: DEV-CHANGE-ME-123
+
+{
+  "fullName": "Angelinne Test",
+  "email": "angelinne@test.com",
+  "password": "123",
+  "role": "User"
+}
+### Invalid role
+POST https://localhost:7055/api/Users
+Content-Type: application/json
+X-API-KEY: DEV-CHANGE-ME-123
+
+{
+  "fullName": "Angelinne Test",
+  "email": "angelinne@test.com",
+  "password": "Password123!",
+  "role": "SuperAdmin"
+}
+### Valid user
+POST https://localhost:7055/api/Users
+Content-Type: application/json
+X-API-KEY: DEV-CHANGE-ME-123
+
+{
+  "fullName": "Angelinne Test",
+  "email": "angelinne2@test.com",
+  "password": "Password123!",
+  "role": "Admin"
+}
+### Delete user
+DELETE https://localhost:7055/api/Users/3
+X-API-KEY: DEV-CHANGE-ME-123
+### Delete user
+DELETE https://localhost:7055/api/Users/2
+X-API-KEY: DEV-CHANGE-ME-123
