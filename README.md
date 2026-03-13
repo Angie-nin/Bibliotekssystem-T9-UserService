@@ -3,6 +3,11 @@
 Detta är UserService för bibliotekssystemet.  
 API:t hanterar användare och roller (Admin/User) och används av MVC-klienten.
 
+## Live API
+API: https://user-service-t9.azurewebsites.net
+
+API-dokumentation (Scalar): https://user-service-t9.azurewebsites.net/scalar
+
 ## Funktioner
 - Hämta alla användare
 - Hämta användare via id
@@ -26,7 +31,7 @@ API:t hanterar användare och roller (Admin/User) och används av MVC-klienten.
 3. Kör:
 dotnet run
 
-Swagger öppnas automatiskt i development-läge.
+Scalar nås på: https://localhost:7055/scalar/
 
 ## Exempel endpoints
 GET /api/users
