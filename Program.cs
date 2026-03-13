@@ -1,30 +1,44 @@
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 using UserService.Data;
 using UserService.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Registrerar tjänster som används i applikationen
+// Services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<UserDbContext>(options =>
-    options.UseSqlite("Data Source=users.db"));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
-// Swagger används endast i utvecklingsmiljö för att testa och dokumentera API:t
+// OpenAPI + API docs i utvecklingsmiljö
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+
+    app.MapScalarApiReference(options =>
+    {
+        options.Title = "UserService API";
+        options.WithOpenApiRoutePattern("/swagger/{documentName}/swagger.json");
+    });
 }
 
 app.UseHttpsRedirection();
 
-// Middleware som skyddar skrivande endpoints med API-nyckel
+// Skyddar skrivande endpoints med API-nyckel
 app.UseMiddleware<ApiKeyMiddleware>();
 
 app.MapControllers();
+
+// Ser till att databasen och tabellerna skapas/uppdateras
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+    dbContext.Database.Migrate();
+}
 
 app.Run();

@@ -2,8 +2,6 @@
 
 namespace UserService.Security;
 
-/* Middleware som kontrollerar att skrivande API-anrop innehåller en giltig API-nyckel.
-   Detta används för att skydda endpoints som skapar, uppdaterar eller raderar data. */
 public class ApiKeyMiddleware
 {
     private readonly RequestDelegate _next;
@@ -16,22 +14,23 @@ public class ApiKeyMiddleware
 
     public async Task InvokeAsync(HttpContext context, IConfiguration config)
     {
-        var path = context.Request.Path.Value?.ToLowerInvariant();
+        var path = context.Request.Path.Value;
 
-        // Tillåt login utan API-nyckel så att användare kan logga in
-        if (path == "/api/users/login")
+        // Tillåt login utan API-nyckel
+        if (path?.Equals("/api/users/login", StringComparison.OrdinalIgnoreCase) == true)
         {
             await _next(context);
             return;
         }
 
-        // Skydda endast skrivande endpoints (POST, PUT, DELETE)
+        // Skydda endast skrivande endpoints
         var method = context.Request.Method;
-        var isWriteMethod = method == HttpMethods.Post ||
-                            method == HttpMethods.Put ||
-                            method == HttpMethods.Delete;
+        var isWriteMethod =
+            HttpMethods.IsPost(method) ||
+            HttpMethods.IsPut(method) ||
+            HttpMethods.IsDelete(method) ||
+            HttpMethods.IsPatch(method);
 
-        // GET-anrop tillåts utan API-nyckel
         if (!isWriteMethod)
         {
             await _next(context);
@@ -40,7 +39,6 @@ public class ApiKeyMiddleware
 
         var expectedKey = config["ApiKey"];
 
-        // Om API-nyckeln inte är konfigurerad i appsettings
         if (string.IsNullOrWhiteSpace(expectedKey))
         {
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -48,16 +46,14 @@ public class ApiKeyMiddleware
             return;
         }
 
-        // Kontrollera att requesten innehåller korrekt API-nyckel
         if (!context.Request.Headers.TryGetValue(HeaderName, out var providedKey) ||
-            providedKey != expectedKey)
+            !string.Equals(providedKey.ToString(), expectedKey, StringComparison.Ordinal))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             await context.Response.WriteAsync("Missing or invalid API key.");
             return;
         }
 
-        // Om API-nyckeln är korrekt fortsätter requesten vidare i pipelinen
         await _next(context);
     }
 }

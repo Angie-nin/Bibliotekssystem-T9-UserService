@@ -296,10 +296,11 @@ C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\staticwebassets.buil
 C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\staticwebassets.development.json
 C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\swae.build.ex.cache
-C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\UserServ.57764DC8.Up2Date
 C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\UserService.dll
 C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\refint\UserService.dll
 C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\UserService.pdb
 C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\UserService.genruntimeconfig.cache
 C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\ref\UserService.dll
+C:\SOS100\Bibliotekssystem-T9\UserService\bin\Debug\net10.0\Scalar.AspNetCore.dll
+C:\SOS100\Bibliotekssystem-T9\UserService\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
