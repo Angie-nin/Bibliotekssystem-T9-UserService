@@ -1,37 +1,56 @@
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 using UserService.Data;
 using UserService.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                      ?? "Data Source=users.db";
+
+// Om appen kör i Azure App Service på Windows
+var home = Environment.GetEnvironmentVariable("HOME");
+if (!string.IsNullOrWhiteSpace(home))
+{
+    var dataFolder = Path.Combine(home, "site", "data");
+    Directory.CreateDirectory(dataFolder);
+
+    var dbPath = Path.Combine(dataFolder, "users.db");
+    connectionString = $"Data Source={dbPath}";
+}
+
 builder.Services.AddDbContext<UserDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(connectionString));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// OpenAPI + API docs i utvecklingsmiljö
+app.UseSwagger();
+app.MapScalarApiReference(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.Title = "UserService API";
+    options.WithOpenApiRoutePattern("/swagger/{documentName}/swagger.json");
+});
 
 app.UseHttpsRedirection();
+
+// Skyddar skrivande endpoints med API-nyckel
 app.UseMiddleware<ApiKeyMiddleware>();
+
+app.MapGet("/", () => "UserService API is running. Go to /scalar for documentation.");
+
 app.MapControllers();
 
+// Ser till att databasen och tabellerna skapas/uppdateras
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-
-    Console.WriteLine("Kör migration...");
-    db.Database.Migrate();
-
-    Console.WriteLine($"Antal users i databasen: {db.Users.Count()}");
+    var dbContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+    dbContext.Database.EnsureCreated();
 }
 
 app.Run();
