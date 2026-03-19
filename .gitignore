@@ -1,6 +1,9 @@
 bin/
 obj/
+.vs/
 *.db
 *.db-shm
 *.db-wal
 *.csproj.user
+*.user
+*.suo
